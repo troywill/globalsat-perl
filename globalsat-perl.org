@@ -71,3 +71,9 @@
     # epx, ept, epv, eps, epy
     
   #+END_SRC
+* gpsd shell script
+  #+BEGIN_SRC sh :tangle launch-gpsd-daemon.sh :shebang #!/bin/sh
+    SUDO="sudo"
+    DEVICE="/dev/ttyUSB0"
+    $SUDO gpsd -n $DEVICE
+  #+END_SRC
