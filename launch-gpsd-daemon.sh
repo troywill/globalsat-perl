@@ -2,5 +2,5 @@
 
 SUDO="sudo"
 DEVICE="/dev/ttyUSB0"
-DEVICE="/dev/ttyUSB1"
+$SUDO killall gpsd
 $SUDO gpsd -n $DEVICE
