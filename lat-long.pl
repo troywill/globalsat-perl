@@ -9,7 +9,7 @@ use Math::Round;
 
 $|++;
 
-my $DEBUG = 1;
+my $DEBUG = 0;
 
 my $gpsd_socket = new IO::Socket::INET (
     PeerAddr => 'localhost',
@@ -27,19 +27,24 @@ exit;
 sub watch {
     $gpsd_socket->print('?WATCH={"enable":true,"json":true}');
     my $devices_json;
-    for (1..10) {
-#	$gpsd_socket->print('?WATCH={"enable":true,"json":true}');
+    for (1..1000) {
 	$devices_json = <$gpsd_socket>;
 	print "=> ", defined($devices_json), " <=\n";
-	sleep .01;
 	last if defined($devices_json);
     }
     
-#    return unless defined($devices_json);
     my $devices_hashref = decode_json($devices_json);
     my @keys = keys %{$devices_hashref};
     my @values = values %{$devices_hashref};
-    my $watch_json = <$gpsd_socket>;
+
+    my $watch_json;
+    print "HI";
+    for (1..1000) {
+	$watch_json = <$gpsd_socket>;
+	last if defined($watch_json);
+	print ".";
+	sleep 0.01;
+    }
     print "watch: $watch_json" if $DEBUG;
 }
 
@@ -48,14 +53,14 @@ sub poll {
     $class = '';
     $gpsd_socket->print("?POLL;");
     for (1..10) {
+	print ".";
 	$poll_json = <$gpsd_socket>;
 	if ( defined($poll_json) ) {
 	    $hashref  = decode_json $poll_json;
 	    $class = $hashref->{class};
-	    print "[CLASS poll?:", $class, "\n";
+	    print "[CLASS poll?:", $class, "]\n";
 	}
 	last if $class eq 'POLL';
-	sleep .01;
     }
     
     my $tpv_hashref = ${$hashref->{tpv}}[0];
@@ -63,7 +68,6 @@ sub poll {
     
     print nearest(.00001, $lat), ",", nearest(.00001, $lon), "\n";
     print "[$time][$track][$speed][$tag][$mode]\n";
-    print "CLASS: $class\n" if $DEBUG;
 }
 
 sub banner {
