@@ -29,7 +29,7 @@ sub watch {
     my $devices_json;
     for (1..1000) {
 	$devices_json = <$gpsd_socket>;
-	print "=> ", defined($devices_json), " <=\n";
+	print "=> ", defined($devices_json), " <=\n" if $DEBUG;
 	last if defined($devices_json);
     }
     
@@ -38,7 +38,6 @@ sub watch {
     my @values = values %{$devices_hashref};
 
     my $watch_json;
-    print "HI";
     for (1..1000) {
 	$watch_json = <$gpsd_socket>;
 	last if defined($watch_json);
@@ -49,22 +48,22 @@ sub watch {
 }
 
 sub poll {
-    my ( $poll_json, $hashref, $class );
-    $class = '';
+    my ( $poll_json, $hashref );
     $gpsd_socket->print("?POLL;");
-    for (1..10) {
-	print ".";
+    for (1..1000) {
+	my $class = '';
+	print "." if $DEBUG;
 	$poll_json = <$gpsd_socket>;
 	if ( defined($poll_json) ) {
 	    $hashref  = decode_json $poll_json;
 	    $class = $hashref->{class};
-	    print "[CLASS poll?:", $class, "]\n";
+	    print "[CLASS poll?:", $class, "]\n" if $DEBUG;
 	}
 	last if $class eq 'POLL';
     }
     
     my $tpv_hashref = ${$hashref->{tpv}}[0];
-    my ($lat, $lon, $time, $track, $tag, $mode, $speed) = ( $tpv_hashref->{class}, $tpv_hashref->{lat}, $tpv_hashref->{lon}, $tpv_hashref->{time}, $tpv_hashref->{track}, $tpv_hashref->{tag}, $tpv_hashref->{mode}, $tpv_hashref->{speed} );
+    my ($class, $lat, $lon, $time, $track, $tag, $mode, $speed) = ( $tpv_hashref->{class}, $tpv_hashref->{lat}, $tpv_hashref->{lon}, $tpv_hashref->{time}, $tpv_hashref->{track}, $tpv_hashref->{tag}, $tpv_hashref->{mode}, $tpv_hashref->{speed} );
     
     print nearest(.00001, $lat), ",", nearest(.00001, $lon), "\n";
     print "[$time][$track][$speed][$tag][$mode]\n";
