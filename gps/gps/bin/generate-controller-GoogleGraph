@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rails generate controller GoogleGraph hour three_day week month year four_year

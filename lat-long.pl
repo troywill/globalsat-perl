@@ -65,8 +65,8 @@ sub poll {
     my $tpv_hashref = ${$hashref->{tpv}}[0];
     my ($class, $lat, $lon, $time, $track, $tag, $mode, $speed) = ( $tpv_hashref->{class}, $tpv_hashref->{lat}, $tpv_hashref->{lon}, $tpv_hashref->{time}, $tpv_hashref->{track}, $tpv_hashref->{tag}, $tpv_hashref->{mode}, $tpv_hashref->{speed} );
     
-    print nearest(.00001, $lat), ",", nearest(.00001, $lon), "\n";
-    print "[$time][$track][$speed][$tag][$mode]\n";
+    print $time, " ", nearest(.00001, $lat), " ", nearest(.00001, $lon), " ", $speed, " ", $track, "\n";
+#    print "[$time][$track][$speed][$tag][$mode]\n";
 }
 
 sub banner {

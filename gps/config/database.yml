@@ -1,0 +1,27 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: gps_development
+  pool: 5
+  username: troy
+  password:
+  template: template0
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: gps_test
+  pool: 5
+  username: troy
+  password:
+  template: template0
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gps_production
+  pool: 5
+  username: troy
+  password:
+  template: template0
+  

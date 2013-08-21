@@ -1,0 +1,4 @@
+class ReverseController < ApplicationController
+  def index
+  end
+end
