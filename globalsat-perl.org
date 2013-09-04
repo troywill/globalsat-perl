@@ -88,7 +88,7 @@
     $dbh->do($statement);
   #+END_SRC
 * gpsd shell script
-  #+BEGIN_SRC sh :tangle launch-gpsd-daemon.sh :shebang #!/bin/sh
+  #+BEGIN_SRC sh :tangle bin/launch-gpsd-daemon.sh :shebang #!/bin/sh
     SUDO="sudo"
     DEVICE="/dev/ttyUSB0"
     $SUDO gpsd -n $DEVICE
