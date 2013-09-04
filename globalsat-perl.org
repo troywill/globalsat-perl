@@ -1,5 +1,5 @@
 * Application lat-long.pl
-  #+BEGIN_SRC perl :tangle lat-long.pl :shebang #!/usr/bin/env perl
+  #+BEGIN_SRC perl :tangle bin/lat-long.pl :shebang #!/usr/bin/env perl
     use strict;
     use warnings;
     use IO::Socket;
@@ -71,6 +71,22 @@
     # epx, ept, epv, eps, epy
     
   #+END_SRC
+* Application dbi.pl
+  #+BEGIN_SRC perl :tangle bin/dbi.pl :shebang #!/usr/bin/env perl
+    my $dbname = "gps_development";
+    
+    $dbh = DBI->connect("dbi:Pg:dbname=$dbname", "", "");
+    
+    # for some advanced uses you may need PostgreSQL type values:
+    use DBD::Pg qw(:pg_types);
+    
+    chomp(my $globalsat_data = `./lat-long.pl`);
+    my ($time, $lat, $lon, $speed, $track) = split( ' ', $globalsat_data);
+    print $time, "\n";
+    my $statement = "INSERT INTO locations (time,lat,lon) VALUES ('$time',$lat,$lon)";
+    print $statement, "\n";
+    $dbh->do($statement);
+  #+END_SRC
 * gpsd shell script
   #+BEGIN_SRC sh :tangle launch-gpsd-daemon.sh :shebang #!/bin/sh
     SUDO="sudo"
@@ -78,4 +94,3 @@
     $SUDO gpsd -n $DEVICE
   #+END_SRC
 * Dancer
-  

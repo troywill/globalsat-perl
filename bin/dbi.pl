@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-print `clear`;
+
 my $dbname = "gps_development";
 
 $dbh = DBI->connect("dbi:Pg:dbname=$dbname", "", "");
