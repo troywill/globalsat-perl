@@ -50,8 +50,8 @@
         my $tpv_hashref = ${$hashref->{tpv}}[0];
         my ($lat, $lon, $time, $track, $tag, $mode, $speed) = ( $tpv_hashref->{lat}, $tpv_hashref->{lon}, $tpv_hashref->{time}, $tpv_hashref->{track}, $tpv_hashref->{tag}, $tpv_hashref->{mode}, $tpv_hashref->{speed} );
         
-        print nearest(.00001, $lat), ",", nearest(.00001, $lon), "\n";
-        print "[$time][$track][$speed][$tag][$mode]\n";
+        print "$time,",  nearest(.00001, $lat), ",", nearest(.00001, $lon), "\n";
+#        print "[$time][$track][$speed][$tag][$mode]\n";
     }
     
     while(1)
@@ -81,16 +81,71 @@
     use DBD::Pg qw(:pg_types);
     
     chomp(my $globalsat_data = `./lat-long.pl`);
-    my ($time, $lat, $lon, $speed, $track) = split( ' ', $globalsat_data);
+    my ($time, $lat, $lon, $speed, $track) = split( ',', $globalsat_data);
     print $time, "\n";
     my $statement = "INSERT INTO locations (time,lat,lon) VALUES ('$time',$lat,$lon)";
     print $statement, "\n";
     $dbh->do($statement);
   #+END_SRC
+  #+BEGIN_EXAMPLE
+    INSERT INTO locations (time,lat,lon) VALUES ('34.08243,-117.72161',[2013-09-04T17:02:46.000Z][266.9486][0.227][MID41][3],)
+    DBD::Pg::db do failed: ERROR:  syntax error at or near "["
+    LINE 1: ...ions (time,lat,lon) VALUES ('34.08243,-117.72161',[2013-09-0...
+  #+END_EXAMPLE
 * gpsd shell script
   #+BEGIN_SRC sh :tangle bin/launch-gpsd-daemon.sh :shebang #!/bin/sh
     SUDO="sudo"
     DEVICE="/dev/ttyUSB0"
     $SUDO gpsd -n $DEVICE
   #+END_SRC
+* PostgreSQL
+** Shell script
+   #+BEGIN_SRC sh :tangle bin/postgresql.sh :shebang #!/bin/sh
+     dbname=gps_development
+     username=
+     table=locations
+     psql $dbname $username <<EOF
+     SELECT * FROM $table
+     EOF
+   #+END_SRC
+** [3/3] Amazon PostgresSQL Step by Step
+   1. [X] Sign in at https://aws.amazon.com
+   2. [X] Navigate to [[https://console.aws.amazon.com/console/home?#][console.aws.amazon.com/console/home/]]
+   3. Launch a database instance at https://console.aws.amazon.com/rds/home
+      - Note: failure due to PostgreSQL not being offered. See next step.
+   4. [X] Order PostgreSQL at https://aws.amazon.com/marketplace/
+   5. [3/6] Create a new Key Pair (2013-09-04)
+      1. [X] Visit the Amazon EC2 Console (click on link)
+      2. [X] Ensure you are in the region that you wish to launch your software
+	 - The key will be downloaded by your browser
+      3. [X] Return to page and refresh browser
+      4. [ ] Select Standard Micro if desired
+      5. [ ] Accept Terms and Launch with 1-Click
+	 - Create an EC2 instance with 1-Click, or optionally, using EC2 Console.
+	 - SSH to the Public_DNS using username root and your key pair the instance was created with.
+           Optionally, browse to http://<Public_DNS> for other OS-level access options listed below.
+	 - The Turnkey Init process should automatically start; Follow the on-screen instructions to configure the software.
+	 - **Accessing the software**
+	   + Normal interface = Web browser http://<Public_DNS>
+	   + Operating System = SSH to the running instance
+	   + OS commands via the browser, go to Web shell at: http://<Public_DNS>:12320
+	   + Administer the software, go to Webmin at: http://<Public_DNS>:12321
+	   + For more info visit: http://www.turnkeylinux.org/
+      6. Software Installation Details
+	 - Product PostgreSQL :: Object-relational Database System powered by 
+         - Version :: 12.1, released 06/06/2013
+	 - Region :: US West (Northern California)
+	 - EC2 Instance Type :: Standard Micro (t1.micro)
+	 - Instance ID :: Visit the AWS Management Console [[https://console.aws.amazon.com/ec2/v2]] to see the instance ID
+	 - VPC Settings ::
+	 - Security Group :: PostgreSQL - Object-relational Database System powered by TurnKey Linux-12-1-AutogenByAWSMP-
+	 - Key Pair :: perl-globalsat
+	 - ::
+      7. 
+
+
+
+
+
+   
 * Dancer
