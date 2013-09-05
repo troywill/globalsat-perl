@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 
 my $dbname = "gps_development";
-$dbname = "postgres";
 my $host = "54.215.211.54";
 my $user = "ec2-user";
 my $password = "globalsat";
