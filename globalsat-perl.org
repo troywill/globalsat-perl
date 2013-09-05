@@ -169,9 +169,8 @@
 
 
 
-
 ** pg_dump
-   #+BEGIN_SRC sql
+   #+BEGIN_SRC sql :tangle bin/pg_dump.sql
      --
      -- PostgreSQL database dump
      --
