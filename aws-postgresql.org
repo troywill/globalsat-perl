@@ -1,0 +1,4 @@
+* [2/3] Step by step
+  1. [X] Visit http://aws.amazon.com/whitepapers/postgresql-in-the-cloud/
+  2. [X] Download and skim AWS_RDBMS_PostgreSQL.pdf
+  3. [ ] Launch a virtual server, known as an Amazon EC2 instance, at https://console.aws.amazon.com
