@@ -1,8 +1,8 @@
-#!/usr/bin/env perl
+#!/usr/bin/bash
 
-my $dbname = "gps_development";
-my $host = "54.215.211.54";
-my $user = "ec2-user";
+host="54.215.211.54"
+ssh $host
+exit
 my $password = "globalsat";
 
 $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host", $user, $password);
