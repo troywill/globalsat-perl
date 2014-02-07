@@ -2,3 +2,9 @@
   1. [X] Visit http://aws.amazon.com/whitepapers/postgresql-in-the-cloud/
   2. [X] Download and skim AWS_RDBMS_PostgreSQL.pdf
   3. [ ] Launch a virtual server, known as an Amazon EC2 instance, at https://console.aws.amazon.com
+* ssh step by step
+  1. http://aws.amazon.com/console/
+  2. 
+* Connecting to Your Instance if You Lose Your Private Key
+  1. i-6a055031, ami-29fed16c, ebs, vol-f4c291a0
+  2. 
