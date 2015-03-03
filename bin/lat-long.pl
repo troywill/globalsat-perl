@@ -1,50 +1,60 @@
 #!/usr/bin/env perl
 
 use strict;
-    use warnings;
-    use IO::Socket;
-    use Time::HiRes qw( sleep );
-    use JSON;
-    use Math::Round;
+use warnings;
+use IO::Socket;
+use Time::HiRes qw( sleep );
+use JSON;
+use Math::Round;
     
-    $|++;
+$|++;
     
-    my $gpsd_socket = new IO::Socket::INET (
-        PeerAddr => 'localhost',
-        PeerPort => '2947',
-        Proto => 'tcp',
-        Blocking => 0
-        ) or die "Could not create socket: $!\n";
+my $gpsd_socket = new IO::Socket::INET (
+    PeerAddr => 'localhost',
+    PeerPort => '2947',
+    Proto => 'tcp',
+    Blocking => 0
+    ) or die "Could not create socket: $!\n";
+
+print $gpsd_socket;
     
-    banner();
-    watch();
-    $gpsd_socket->print("?POLL;");
-    poll();
+banner();
+watch();
+$gpsd_socket->print("?POLL;");
+poll();
     
-    exit;
+exit;
     
-    sub watch {
-        $gpsd_socket->print('?WATCH={"enable":true,"json":true}');
-        my $devices_json = <$gpsd_socket>;
-        return unless defined($devices_json);
-        my $devices_hashref = decode_json($devices_json);
-        my @keys = keys %{$devices_hashref};
-        my @values = values %{$devices_hashref};
-        my $watch_json = <$gpsd_socket>;
-    }
+sub watch {
+    $gpsd_socket->print('?WATCH={"enable":true,"json":true}');
+    sleep 2;
+    my $devices_json = <$gpsd_socket>;
+    return unless defined($devices_json);
+    print "DEBUG: devices_json defined => $devices_json\n";
+    my $devices_hashref = decode_json($devices_json);
+    print "DEBUG: $devices_hashref\n";
+    my @keys = keys %{$devices_hashref};
+    my @values = values %{$devices_hashref};
+    print "\nDEBUG: ", @keys, "\n";
+    print "\nDEBUG: ", @values, "\n";
+    my $watch_json = <$gpsd_socket>;
+    print "\nDEBUG: $watch_json\n";
+}
     
-    sub banner {
-        my $banner = <$gpsd_socket>;
-        # {"class":"VERSION","release":"3.7","rev":"3.7","proto_major":3,"proto_minor":7}
-        my $hashref  = decode_json $banner;
-        my @keys = keys %{$hashref};
-        my @values = values %{$hashref};
-        my $release = $hashref->{release};
-    }
+sub banner {
+    my $banner = <$gpsd_socket>;
+    # {"class":"VERSION","release":"3.7","rev":"3.7","proto_major":3,"proto_minor":7}
+    my $hashref  = decode_json $banner;
+    my @keys = keys %{$hashref};
+    my @values = values %{$hashref};
+    my $release = $hashref->{release};
+    print "\nDEBUG release =>  $release\n";
+}
     
     sub poll {
         my $count = 1;
         my $poll_json = <$gpsd_socket>;
+        print "\nDEBUG: poll_json => $poll_json\n";
         return unless defined($poll_json);
         my $hashref  = decode_json $poll_json;
         my $tpv_hashref = ${$hashref->{tpv}}[0];
